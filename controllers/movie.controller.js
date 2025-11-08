@@ -1,4 +1,7 @@
 const Movie = require('../models/movie.model');
+const movieServices = require('../services/movie.services');
+const { successResponseBody, errorResponseBody} = require('../utils/responsebody');
+
 
 
 /**
@@ -11,28 +14,59 @@ const Movie = require('../models/movie.model');
 
 const createMovie = async (req, res) => {
     try {
-        console.log(req.body);
-        const movie = await Movie.create(req.body);  // Create and save the movie in one step
-        
-        return res.status(201).json({
-            success: true,
-            error: {},
-            data: movie,
-            message: 'Successfully created a new movie',
-
-        })
+        const movie = await movieServices.createMovie(req.body);  // Create and save the movie in one step
+        successResponseBody.data = movie;
+        return res.status(201).json(successResponseBody);
 
     } catch(err){
         console.log(err);
-        return res.status(500).json({
-            success: true,
-            error: err,
-            data: {},
-            message: 'Something went wrong'
-        });
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
+const deleteMovie = async (req, res) => {
+    try {
+        const response = await movieServices.deleteMovieById(req.params.id);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
+    } catch(err){
+        console.log(err);
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+    } finally {
+        errorResponseBody.err = {};
+        successResponseBody.data = {};
+    }
+}
+
+const getMovie = async (req, res) => {
+    try {
+        const response = await movieServices.getMovieById(req.params.id);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
+
+    } catch(err){
+        console.log(err);
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+
+    } finally {
+        errorResponseBody.err = {};
+        successResponseBody.data = {};
     }
 }
 
 module.exports = {
-    createMovie
+    createMovie,
+    getMovie,
+    deleteMovie
 }
