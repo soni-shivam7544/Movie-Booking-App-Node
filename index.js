@@ -2,8 +2,17 @@ const express = require("express");
 const app = express();
 const env = require("dotenv");
 const mongoose = require("mongoose");
+const movieRoutes = require("./routes/movie.routes");
 
+// Load environment variables first
 env.config();
+
+// Middleware setup
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Route setup
+movieRoutes(app);
 
 const main = () => {
     mongoose.connect(process.env.DB_URL)
@@ -19,8 +28,6 @@ main();
 
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req,res) => {
     console.log("Hitting /home");
