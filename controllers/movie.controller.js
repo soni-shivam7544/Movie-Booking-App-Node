@@ -1,4 +1,3 @@
-const Movie = require('../models/movie.model');
 const movieServices = require('../services/movie.services');
 const { successResponseBody, errorResponseBody} = require('../utils/responsebody');
 
@@ -82,9 +81,28 @@ const updateMovie = async (req, res) => {
 
 }
 
+const getMovies = async (req, res) => {
+    try {
+        const response = await movieServices.fetchMovies(req.query);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
+
+    }catch(err) {
+        console.log(err);
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
+
 module.exports = {
     createMovie,
     getMovie,
     deleteMovie,
-    updateMovie
+    updateMovie,
+    getMovies
 }

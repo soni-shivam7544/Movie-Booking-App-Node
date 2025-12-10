@@ -26,6 +26,10 @@ const movieRoutes = (app) => {
         validateMovieCreateRequest,
         movieController.updateMovie
     );
+    app.get(
+        '/mba/api/v1/movies',
+        movieController.getMovies
+    )
     
 
 }
