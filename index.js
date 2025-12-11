@@ -3,6 +3,7 @@ const app = express();
 const env = require("dotenv");
 const mongoose = require("mongoose");
 const movieRoutes = require("./routes/movie.routes");
+const theatreRoutes = require("./routes/theatre.routes");
 
 // Load environment variables first
 env.config();
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Route setup
 movieRoutes(app);
+theatreRoutes(app);
 
 const main = () => {
     mongoose.connect(process.env.DB_URL)
