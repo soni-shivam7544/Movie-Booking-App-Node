@@ -7,6 +7,14 @@ const theatreRoutes = (app) => {
         validateTheatreCreateRequest,
         theatreController.createTheatre
     );
+    // app.delete(
+    //     '/mba/api/v1/theatres/:id',
+    //     theatreController.destroyTheatre
+    // )
+    app.get(
+        '/mba/api/v1/theatres/:id',
+        theatreController.getTheatre
+    )
 };
 
 module.exports = theatreRoutes;

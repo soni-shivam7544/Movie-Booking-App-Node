@@ -22,6 +22,24 @@ const createTheatre = async (theatreData) =>{
 
 }
 
+const getTheatre = async (id) => {
+    try {
+        const response = await Theatre.findById(id);
+        if(!response) {
+            return {
+                err: "Theatre not found",
+                code: 404
+            }
+        }
+        return response;
+    }
+    catch(err) {
+        console.log(err);
+        throw err;
+    }
+}
+
 module.exports = {
-    createTheatre
+    createTheatre,
+    getTheatre
 }
