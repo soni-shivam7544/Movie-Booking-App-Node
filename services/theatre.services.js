@@ -39,7 +39,19 @@ const getTheatre = async (id) => {
     }
 }
 
+const getAllTheatres = async () => {
+    try {
+        const theatres = await Theatre.find();
+        return theatres;
+
+    } catch(err) {
+        console.log(err);
+        throw err;
+    }
+}
+
 module.exports = {
     createTheatre,
-    getTheatre
+    getTheatre,
+    getAllTheatres
 }
