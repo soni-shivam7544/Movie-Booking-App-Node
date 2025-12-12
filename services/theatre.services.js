@@ -22,6 +22,22 @@ const createTheatre = async (theatreData) =>{
 
 }
 
+const deleteTheatreById = async (id) => {
+    try {
+        const response = await Theatre.findByIdAndDelete(id);
+        if(!response) {
+            return {
+                err: "Theatre not found",
+                code: 404
+            }
+        }
+        return response;
+    }catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
 const getTheatre = async (id) => {
     try {
         const response = await Theatre.findById(id);
@@ -52,6 +68,7 @@ const getAllTheatres = async () => {
 
 module.exports = {
     createTheatre,
+    deleteTheatreById,
     getTheatre,
     getAllTheatres
 }
