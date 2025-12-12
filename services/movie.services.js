@@ -1,9 +1,21 @@
 const Movie = require('../models/movie.model');
 
 const createMovie = async (movieData) => {
-    const movie = await Movie.create(movieData);
-    console.log("Movie created", movie);
-    return movie;
+    try {
+        const movie = await Movie.create(movieData);
+        console.log("Movie created", movie);
+        return movie;
+    } catch(error) {
+        let err = {}
+        if(error.name === 'ValidationError') {
+            Object.keys(error.errors).forEach((key) => {
+                err[key] = error.errors[key].message;
+            });
+            return {err, code: 422};  // code 422 for logical validation error
+        }
+        throw err;
+        
+    }
 }
 
 const getMovieById = async (id) =>{

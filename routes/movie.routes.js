@@ -6,7 +6,7 @@ const { validateMovieCreateRequest } = require('../middlewares/movie.middlewares
 const movieRoutes = (app) => {
     app.post(
         '/mba/api/v1/movies',
-        validateMovieCreateRequest,
+        validateMovieCreateRequest, // client request validation via middleware
         movieController.createMovie
     );
     app.get(
@@ -23,7 +23,7 @@ const movieRoutes = (app) => {
     );
     app.put(
         '/mba/api/v1/movies/:id',
-        validateMovieCreateRequest,
+        validateMovieCreateRequest, // client request validation via middleware
         movieController.updateMovie
     );
     app.get(

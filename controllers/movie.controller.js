@@ -14,6 +14,10 @@ const { successResponseBody, errorResponseBody} = require('../utils/responsebody
 const createMovie = async (req, res) => {
     try {
         const movie = await movieServices.createMovie(req.body);  // Create and save the movie in one step
+        if(movie.err){
+            errorResponseBody.err = movie.err;
+            return res.status(movie.code).json(errorResponseBody);
+        }
         successResponseBody.data = movie;
         return res.status(201).json(successResponseBody);
 
