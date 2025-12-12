@@ -1,16 +1,6 @@
 const movieServices = require('../services/movie.services');
 const { successResponseBody, errorResponseBody} = require('../utils/responsebody');
 
-
-
-/**
- * Controller function to create a new movie
- * @param {*} req {name, description, ...}
- * @param {*} res 
- * @returns movie created
- * 
- */
-
 const createMovie = async (req, res) => {
     try {
         const movie = await movieServices.createMovie(req.body);  // Create and save the movie in one step
@@ -101,7 +91,6 @@ const getMovies = async (req, res) => {
         return res.status(500).json(errorResponseBody);
     }
 }
-
 
 module.exports = {
     createMovie,

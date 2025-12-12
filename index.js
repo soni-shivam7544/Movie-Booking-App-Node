@@ -29,15 +29,6 @@ const main = () => {
 main();
 
 
-
-
-app.get("/", (req,res) => {
-    console.log("Hitting /home");
-    res.json({
-        success: true
-    });
-});
-
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on ${process.env.PORT}` );
 });
