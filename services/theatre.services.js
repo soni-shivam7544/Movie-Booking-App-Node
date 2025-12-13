@@ -160,7 +160,7 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     return await theatre.populate('movies'); // return the theatre with movie field details populated
 }
 
-
+/**
  * @param {*} id -> the unique identity that helps determine the theatre that needs to be updated
  * @param {*} theatreData -> the data that the theatre should be updated with
  * @returns -> the theatre with updated data or error if occure.
