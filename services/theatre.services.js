@@ -111,6 +111,56 @@ const getAllTheatres = async (data) => {
 
 /**
  * 
+ * @param {*} theatreId -> unique id of the theatre for which we want to update movies
+ * @param {*} movieIds -> array of movie ids that are expected to be updated in theatre
+ * @param {*} insert -> boolean that tells whether we want to insert movies or remove them
+ * @returns ->updated theatre object
+ */
+
+const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
+    const theatre = await Theatre.findById(theatreId);
+    if(!theatre) {
+        return {
+            err: "Theatre not found",
+            code: 404
+        }
+    }
+
+    // Validate that all movieIds exist in the database
+    const Movie = require('../models/movie.model');
+    const existingMovies = await Movie.find({ _id: { $in: movieIds } });
+    const existingMovieIds = existingMovies.map(movie => movie._id.toString());
+    const invalidMovieIds = movieIds.filter(id => !existingMovieIds.includes(id.toString()));
+
+    if (invalidMovieIds.length > 0) {
+        return {
+            err: `Invalid movie IDs: ${invalidMovieIds.join(', ')}`,
+            code: 400
+        }
+    }
+
+    if(insert === true) {
+        // we need to add movies
+        movieIds.forEach((movieId) => {
+            theatre.movies.push(movieId);
+        });
+        
+    }else {
+        // we need to remove movies
+        let savedMovieIds = theatre.movies;
+        movieIds.forEach((movieId) => {
+            savedMovieIds = savedMovieIds.filter(smi => smi != movieId);
+
+        });
+        theatre.movies = savedMovieIds;
+
+    }
+
+    await theatre.save();
+    return await theatre.populate('movies'); // return the theatre with movie field details populated
+}
+
+
  * @param {*} id -> the unique identity that helps determine the theatre that needs to be updated
  * @param {*} theatreData -> the data that the theatre should be updated with
  * @returns -> the theatre with updated data or error if occure.
@@ -143,5 +193,6 @@ module.exports = {
     deleteTheatreById,
     getTheatre,
     getAllTheatres,
+    updateMoviesInTheatres,
     updateTheatre
 }
