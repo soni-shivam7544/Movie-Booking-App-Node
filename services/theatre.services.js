@@ -78,9 +78,19 @@ const getTheatre = async (id) => {
  * @returns -> all the theatres present in the database.
  */
 
-const getAllTheatres = async () => {
+const getAllTheatres = async (data) => {
     try {
-        const theatres = await Theatre.find();
+        let filter = {};
+        if(data && data.city){
+            filter.city = data.city;
+        }
+        if(data && data.pincode) {
+            filter.pincode = data.pincode;
+        }
+        if(data && data.name){
+            filter.name = data.name;
+        }
+        const theatres = await Theatre.find(filter);
         return theatres;
 
     } catch(err) {
