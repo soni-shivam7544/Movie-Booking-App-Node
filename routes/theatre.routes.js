@@ -1,5 +1,5 @@
 const theatreController = require('../controllers/theatre.controller');
-const { validateTheatreCreateRequest } = require('../middlewares/theatre.middlewares');
+const { validateTheatreCreateRequest, validateUpdateMovies } = require('../middlewares/theatre.middlewares');
 
 const theatreRoutes = (app) => {
     // routes function takes express app as parameter
@@ -28,6 +28,12 @@ const theatreRoutes = (app) => {
         '/mba/api/v1/theatres',
         theatreController.getTheatres
     )
+
+    app.patch(
+        '/mba/api/v1/theatres/:id/movies',
+        validateUpdateMovies,
+        theatreController.updateMovies
+    );
 };
 
 module.exports = theatreRoutes;
