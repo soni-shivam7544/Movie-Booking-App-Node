@@ -28,6 +28,18 @@ const theatreRoutes = (app) => {
         '/mba/api/v1/theatres',
         theatreController.getTheatres
     )
+
+    // UPDATE
+    app.put(
+        '/mba/api/v1/theatre/:id',
+        validateTheatreCreateRequest,
+        theatreController.updateTheatre
+    )
+
+    app.patch(
+        '/mba/api/v1/theatre/:id',
+        theatreController.updateTheatre
+    )
 };
 
 module.exports = theatreRoutes;
