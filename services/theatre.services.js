@@ -1,5 +1,4 @@
 const Theatre = require('../models/theatre.model');
-
 /**
  * 
  * @param  theatreData -> {name, description, city, pincode, address} 
@@ -91,6 +90,11 @@ const getAllTheatres = async (data) => {
         }
         if(data && data.name){
             filter.name = data.name;
+        }
+        if(data && data.movieId){
+            filter.movies = { $all: data.movieId}; // $all operator matches arrays that contain all elements specified in the query array.
+            //(automatically converts to array if single value is provided and also string to ObjectId)
+            //Mongoose Debug: theaters.find({ movies: { '$all': [ ObjectId("690a57cf25c665cec78d7601") ] } }, {})
         }
         if(data && data.limit) {
             pagination.limit = data.limit;
