@@ -27,6 +27,12 @@ const theatreRoutes = (app) => {
     app.get(
         '/mba/api/v1/theatres',
         theatreController.getTheatres
+    ) 
+    
+    // READ MOVIES IN THEATRE
+    app.get(
+        '/mba/api/v1/theatres/:id/movies',
+        theatreController.getMovies
     )
   
     // UPDATE

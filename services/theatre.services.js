@@ -192,11 +192,29 @@ const updateTheatre = async (id, theatreData) => {
     }
 }
 
+/**
+ * 
+ * @param {*} theatreId -> uniquely identifies the theatre whose movies are going to be fetched
+ * @returns -> theatre if it exists along with the movies playing in that theatre
+ */
+
+const getMoviesInTheatre = async (theatreId) =>{
+    const theatre = await Theatre.findById(theatreId, { name: 1, address: 1, movies: 1}).populate('movies');
+    if(!theatre) {
+        return {
+            err: "Theatre not found",
+            code: 404
+        }
+    }
+    return theatre;
+}
+
 module.exports = {
     createTheatre,
     deleteTheatreById,
     getTheatre,
     getAllTheatres,
     updateMoviesInTheatres,
-    updateTheatre
+    updateTheatre,
+    getMoviesInTheatre
 }
