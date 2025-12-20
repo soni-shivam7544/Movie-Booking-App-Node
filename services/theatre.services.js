@@ -1,5 +1,4 @@
 const Theatre = require('../models/theatre.model');
-
 /**
  * 
  * @param  theatreData -> {name, description, city, pincode, address} 
@@ -92,6 +91,11 @@ const getAllTheatres = async (data) => {
         if(data && data.name){
             filter.name = data.name;
         }
+        if(data && data.movieId){
+            filter.movies = { $all: data.movieId}; // $all operator matches arrays that contain all elements specified in the query array.
+            //(automatically converts to array if single value is provided and also string to ObjectId)
+            //Mongoose Debug: theaters.find({ movies: { '$all': [ ObjectId("690a57cf25c665cec78d7601") ] } }, {})
+        }
         if(data && data.limit) {
             pagination.limit = data.limit;
         }
@@ -118,7 +122,7 @@ const getAllTheatres = async (data) => {
  */
 
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
-    const theatre = await Theatre.findById(theatreId);
+    let theatre = await Theatre.findById(theatreId);
     if(!theatre) {
         return {
             err: "Theatre not found",
@@ -141,22 +145,22 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
 
     if(insert === true) {
         // we need to add movies
-        movieIds.forEach((movieId) => {
-            theatre.movies.push(movieId);
-        });
-        
+        await Theatre.updateOne(
+            { _id: theatreId },
+            { $addToSet: { movies: { $each: movieIds } } }
+            // mongoose automatically string movie ids to ObjectIds AND addToSet avoids duplicates
+        );
+
     }else {
         // we need to remove movies
-        let savedMovieIds = theatre.movies;
-        movieIds.forEach((movieId) => {
-            savedMovieIds = savedMovieIds.filter(smi => smi != movieId);
-
-        });
-        theatre.movies = savedMovieIds;
+        await Theatre.updateOne(
+            { _id: theatreId },
+            { $pull: { movies: { $in: movieIds } } } // pull removes all occurrences of the values in the array
+        )
 
     }
 
-    await theatre.save();
+    theatre = await Theatre.findById(theatreId);
     return await theatre.populate('movies'); // return the theatre with movie field details populated
 }
 
@@ -188,11 +192,41 @@ const updateTheatre = async (id, theatreData) => {
     }
 }
 
+/**
+ * 
+ * @param {*} theatreId -> uniquely identifies the theatre whose movies are going to be fetched
+ * @returns -> theatre if it exists along with the movies playing in that theatre
+ */
+
+const getMoviesInTheatre = async (theatreId) =>{
+    const theatre = await Theatre.findById(theatreId, { name: 1, address: 1, movies: 1}).populate('movies');
+    if(!theatre) {
+        return {
+            err: "Theatre not found",
+            code: 404
+        }
+    }
+    return theatre;
+}
+
+const checkMovieInTheatre = async( theatreId, movieId ) => {
+    const theatre = await Theatre.findById(theatreId);
+    if(!theatre){
+        return {
+            err:"Theatre not found!",
+            code: 404
+        }
+    }
+    return theatre.movies.indexOf(movieId) !== -1;
+}
+
 module.exports = {
     createTheatre,
     deleteTheatreById,
     getTheatre,
     getAllTheatres,
     updateMoviesInTheatres,
-    updateTheatre
+    updateTheatre,
+    getMoviesInTheatre,
+    checkMovieInTheatre
 }

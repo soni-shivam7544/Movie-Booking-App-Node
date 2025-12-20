@@ -12,6 +12,7 @@ env.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+mongoose.set('debug', true); // Enable mongoose debug mode for detailed query logging
 // Route setup
 movieRoutes(app);
 theatreRoutes(app);

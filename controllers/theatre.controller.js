@@ -98,11 +98,45 @@ const updateTheatre = async (req, res) => {
     }
 }
 
+const getMovies = async (req, res) => {
+    try {
+        const response = await theatreServices.getMoviesInTheatre(req.params.id);
+        if(response.err) {
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
+    } catch(err) {
+        console.log(err);
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
+const checkMovie = async (req, res) => {
+    try {
+        const isMoviePresent = await theatreServices.checkMovieInTheatre(req.params.theatreId, req.params.movieId);
+        if(isMoviePresent.err) {
+            errorResponseBody.err = isMoviePresent.err;
+            return res.status(isMoviePresent.code).json(errorResponseBody);
+        }
+        successResponseBody.data = isMoviePresent;
+        return res.status(200).json(successResponseBody);
+    } catch(err) {
+        console.log(err);
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
 module.exports = {
     createTheatre,
     destroyTheatre,
     getTheatre,
     getTheatres,
     updateMovies,
-    updateTheatre
+    updateTheatre,
+    getMovies,
+    checkMovie
 }
