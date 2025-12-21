@@ -1,6 +1,12 @@
 const User = require('../models/user.model');
 const { USER_ROLE, USER_STATUS } = require('../utils/constants');
 
+/**
+ * 
+ * @param userData -> The data containing new user's credentials
+ * @returns -> An object of new User created
+ */
+
 const createUser = async (userData) => {
     try {
         if(!userData.userRole || userData.userRole == USER_ROLE.customer) {
@@ -33,6 +39,12 @@ const createUser = async (userData) => {
         throw error;
     }
 }
+
+/**
+ * 
+ * @param {*} email -> Used to determine the user we are looking for
+ * @returns -> the user whose name is registered with the given email
+ */
 
 const getUserByEmail = async (email)=> {
     try {
