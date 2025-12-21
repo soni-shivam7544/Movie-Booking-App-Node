@@ -6,6 +6,14 @@ const createUser = async (userData) => {
         return response;
     } catch (error) {
         console.log(error);
+        let err = {};
+        if(error.name === "ValidationError"){
+            Object.keys(error.errors).forEach((key)=>{
+                err[key] = error.errors[key].message;
+            });
+            throw { err, code:422};
+        }
+        
         throw error;
     }
 }
