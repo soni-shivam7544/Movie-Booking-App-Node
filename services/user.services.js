@@ -1,4 +1,4 @@
-const user = require('../models/user.model');
+const User = require('../models/user.model');
 const { USER_ROLE, USER_STATUS } = require('../utils/constants');
 
 const createUser = async (userData) => {
@@ -18,7 +18,7 @@ const createUser = async (userData) => {
 
 
 
-        const response = await user.create(userData);
+        const response = await User.create(userData);
         return response;
     } catch (error) {
         console.log(error);
@@ -34,6 +34,23 @@ const createUser = async (userData) => {
     }
 }
 
+const getUserByEmail = async (email)=> {
+    try {
+        const user = User.findOne({ email });
+        if(!user) {
+            throw {
+                err: "No user found for the given email.",
+                code: 404
+            }
+        }
+        return user;
+        
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
-    createUser
+    createUser,
+    getUserByEmail
 }
