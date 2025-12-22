@@ -46,7 +46,7 @@ const createUser = async (userData) => {
  * @returns -> the user whose name is registered with the given email
  */
 
-const getUserByEmail = async (email)=> {
+const getUserByEmail = async (email) => {
     try {
         const user = User.findOne({ email });
         if(!user) {
@@ -62,7 +62,24 @@ const getUserByEmail = async (email)=> {
     }
 }
 
+const getUserById = async (id) => {
+    try {
+        const user = await User.findById(id);
+        if(!user){
+            throw {
+                err: "No user found for the fiven id",
+                code: 404
+            }
+        }
+        return user;
+    } catch(error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     createUser,
-    getUserByEmail
+    getUserByEmail,
+    getUserById
 }
