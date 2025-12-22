@@ -15,6 +15,12 @@ const userRoutes = (app) => {
         authMiddlewares.validateSigninRequest,
         userController.signin
     )
+
+    app.patch(
+        '/mba/api/v1/auth/reset',
+        authMiddlewares.isAuthenticated,
+        userController.resetPassword
+    )
 }
 
 
