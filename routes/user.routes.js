@@ -26,6 +26,8 @@ const userRoutes = (app) => {
     app.patch(
         '/mba/api/v1/user/:id',
         authMiddlewares.validateUpdateUserRequest,
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         userController.update
     )
 }
