@@ -1,20 +1,22 @@
 const movieServices = require('../services/movie.services');
 const { successResponseBody, errorResponseBody} = require('../utils/responsebody');
+const { STATUS } = require('../utils/constants');
 
 const createMovie = async (req, res) => {
     try {
         const movie = await movieServices.createMovie(req.body);  // Create and save the movie in one step
-        if(movie.err){
-            errorResponseBody.err = movie.err;
-            return res.status(movie.code).json(errorResponseBody);
-        }
         successResponseBody.data = movie;
-        return res.status(201).json(successResponseBody);
+        successResponseBody.message = "Movie created successfully.";
+        return res.status(STATUS.CREATED).json(successResponseBody);
 
-    } catch(err){
-        console.log(err);
-        errorResponseBody.err = err;
-        return res.status(500).json(errorResponseBody);
+    } catch(error){
+        console.log(error);
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 

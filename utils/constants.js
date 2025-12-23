@@ -25,7 +25,7 @@ const STATUS = {
     UNAUTHORISED: 401,
     NOT_FOUND: 404,
     BAD_REQUEST: 400,
-    UNPROCESSED_ENTITY: 422,
+    UNPROCESSED_ENTITY: 422, // unprocessable_entity
     FORBIDDEN: 403
 }
 

@@ -1,4 +1,6 @@
 const Movie = require('../models/movie.model');
+const { STATUS } = require('../utils/constants');
+
 
 /**
  * 
@@ -9,7 +11,6 @@ const Movie = require('../models/movie.model');
 const createMovie = async (movieData) => {
     try {
         const movie = await Movie.create(movieData);
-        console.log("Movie created", movie);
         return movie;
     } catch(error) {
         let err = {}
@@ -17,7 +18,7 @@ const createMovie = async (movieData) => {
             Object.keys(error.errors).forEach((key) => {
                 err[key] = error.errors[key].message;
             });
-            return {err, code: 422};  // code 422 for logical validation error
+            throw {err, code: STATUS.UNPROCESSED_ENTITY};  // code 422 for logical validation error
         }
         throw err;
         
