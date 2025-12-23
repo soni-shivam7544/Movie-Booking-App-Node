@@ -23,16 +23,16 @@ const createMovie = async (req, res) => {
 const deleteMovie = async (req, res) => {
     try {
         const response = await movieServices.deleteMovieById(req.params.id);
-        if(response.err){
-            errorResponseBody.err = response.err;
-            return res.status(response.code).json(errorResponseBody);
-        }
         successResponseBody.data = response;
-        return res.status(200).json(successResponseBody);
-    } catch(err){
-        console.log(err);
-        errorResponseBody.err = err;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
+    } catch(error){
+        console.log(error);
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     } finally {
         errorResponseBody.err = {};
         successResponseBody.data = {};

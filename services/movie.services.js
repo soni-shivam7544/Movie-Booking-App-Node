@@ -51,17 +51,21 @@ const getMovieById = async (id) =>{
  */
 
 const deleteMovieById = async (id) => {
-    const response = await Movie.deleteOne({
-        _id: id
-    })
-    if(response.deletedCount === 0){
-        return {
-            err: "No movie found for the corresponding id provided",
-            code: 404
-        }
+    try {
+        const response = await Movie.deleteOne({
+            _id: id
+        })
+        if(response.deletedCount === 0){
+            throw {
+                err: "No movie found for the corresponding id provided",
+                code: STATUS.NOT_FOUND
+            }
 
+        }
+        return response;
+    } catch (error) {
+        throw error;
     }
-    return response;
 }
 
 /**

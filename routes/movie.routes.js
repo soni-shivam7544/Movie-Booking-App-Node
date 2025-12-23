@@ -29,6 +29,8 @@ const movieRoutes = (app) => {
     // DELETE
     app.delete(
         '/mba/api/v1/movies/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         movieController.deleteMovie
     );
 
