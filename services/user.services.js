@@ -1,0 +1,111 @@
+const User = require('../models/user.model');
+const { USER_ROLE, USER_STATUS } = require('../utils/constants');
+
+/**
+ * 
+ * @param userData -> The data containing new user's credentials
+ * @returns -> An object of new User created
+ */
+
+const createUser = async (userData) => {
+    try {
+        if(!userData.userRole || userData.userRole == USER_ROLE.customer) {
+            if(userData.userStatus && userData.userStatus != USER_STATUS.approved){
+                throw {
+                    err: "We cannot set any other user_status for customers",
+                    code: 400
+                }
+            }
+        }
+
+        if(userData.userRole && userData.userRole != USER_ROLE.customer){
+            userData.userStatus = USER_STATUS.pending;
+        }
+
+
+
+        const response = await User.create(userData);
+        return response;
+    } catch (error) {
+        console.log(error);
+        let err = {};
+        if(error.name === "ValidationError"){
+            Object.keys(error.errors).forEach((key)=>{
+                err[key] = error.errors[key].message;
+            });
+            throw { err, code:422};
+        }
+        
+        throw error;
+    }
+}
+
+/**
+ * 
+ * @param {*} email -> Used to determine the user we are looking for
+ * @returns -> the user whose name is registered with the given email
+ */
+
+const getUserByEmail = async (email) => {
+    try {
+        const user = User.findOne({ email });
+        if(!user) {
+            throw {
+                err: "No user found for the given email.",
+                code: 404
+            }
+        }
+        return user;
+        
+    } catch (error) {
+        throw error;
+    }
+}
+
+const getUserById = async (id) => {
+    try {
+        const user = await User.findById(id);
+        if(!user){
+            throw {
+                err: "No user found for the fiven id",
+                code: 404
+            }
+        }
+        return user;
+    } catch(error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const updateUserRoleOrStatus = async(data, userId) => {
+    try {
+        let updateQuery = {};
+        if(data.userRole) updateQuery.userRole = data.userRole;
+        if(data.userStatus) updateQuery.userStatus = data.userStatus;
+
+        let response = await User.findOneAndUpdate({
+            _id: userId,
+        }, updateQuery, { new: true, runValidators: true});
+
+        if(!response) throw { err: "No user found for the given Id", code: 404};
+
+        return response;
+    } catch(error) {
+        if(error.name == "ValidationError"){
+            let err = {};
+            Object.keys(error.errors).forEach( (key) => {
+                err[key] = error.errors[key].message;
+            });
+            throw { err, code:400};
+        }
+        throw error;
+    }
+}
+
+module.exports = {
+    createUser,
+    getUserByEmail,
+    getUserById,
+    updateUserRoleOrStatus
+}
