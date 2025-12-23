@@ -37,10 +37,14 @@ const movieRoutes = (app) => {
     // UPDATE
     app.patch(
         '/mba/api/v1/movies/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         movieController.updateMovie
     );
     app.put(
         '/mba/api/v1/movies/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         validateMovieCreateRequest, // client request validation via middleware
         movieController.updateMovie
     );

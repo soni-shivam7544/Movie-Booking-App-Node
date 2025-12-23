@@ -80,9 +80,18 @@ const deleteMovieById = async (id) => {
  */
 
 const updateMovieById = async (id, updateData) => {
-    const movie = await Movie.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
-    console.log("Movie updated", movie);
-    return movie;
+    try {
+        const movie = await Movie.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+        return movie;
+    } catch(error) {
+        if(error.name === 'ValidationError') {
+            Object.keys(error.errors).forEach((key) => {
+                err[key] = error.errors[key].message;
+            });
+            throw {err, code: STATUS.UNPROCESSED_ENTITY};  // code 422 for logical validation error
+        }
+        throw error;
+    }
 }
 
 /**

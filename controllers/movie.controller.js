@@ -64,12 +64,16 @@ const updateMovie = async (req, res) => {
     try {
         const response = await movieServices.updateMovieById(req.params.id, req.body);
         successResponseBody.data = response;
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
     }
-    catch(err){
-        console.log(err);
-        errorResponseBody.err = err;
-        return res.status(500).json(errorResponseBody);
+    catch(error){
+        console.log(error);
+        if(error.err) {
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     } finally {
         errorResponseBody.err = {};
         successResponseBody.data = {};
