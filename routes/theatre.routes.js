@@ -49,12 +49,16 @@ const theatreRoutes = (app) => {
     // UPDATE
     app.put(
         '/mba/api/v1/theatre/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdminOrClient,
         validateTheatreCreateRequest,
         theatreController.updateTheatre
     )
 
     app.patch(
         '/mba/api/v1/theatre/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdminOrClient,
         theatreController.updateTheatre
     )
   

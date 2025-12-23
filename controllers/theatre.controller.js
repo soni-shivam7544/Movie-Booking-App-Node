@@ -41,16 +41,16 @@ const destroyTheatre = async (req, res) => {
 const getTheatre = async(req, res) =>{
     try {
         const response = await theatreServices.getTheatre(req.params.id);
-        if(response.err) {
-            errorResponseBody.err = response.err;
-            return res.status(response.code).json(errorResponseBody);
-
-        }
+        
         successResponseBody.data = response;
         successResponseBody.message = "Successfully fetched the data of the theatre";
         return res.status(STATUS.OK).json(successResponseBody);
-    } catch(err) {
-        errorResponseBody.err = err;
+    } catch(error) {
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
         return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
@@ -61,8 +61,8 @@ const getTheatres = async (req, res) =>  {
         successResponseBody.data = theatres;
         successResponseBody.message = "Successfully fetched all theatres";
         return res.status(STATUS.OK).json(successResponseBody);
-    } catch(err) {
-        errorResponseBody.err = err;
+    } catch(error) {
+        errorResponseBody.err = error;
         return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
@@ -87,16 +87,16 @@ const updateMovies = async(req, res) => {
 const updateTheatre = async (req, res) => {
     try {
         const response = await theatreServices.updateTheatre(req.params.id, req.body);
-        if(response.err) {
-            errorResponseBody.err = response.err;
-            return res.status(response.code).json(errorResponseBody);
-        }
         successResponseBody.data = response;
         successResponseBody.message = "Theatre updated successfully";
         return res.status(STATUS.OK).json(successResponseBody);
-    } catch(err) {
-        console.log(err);
-        errorResponseBody.err = err;
+    } catch(error) {
+        console.log(error);
+        if(error.err) {
+            errorResponseBody.err = error.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
         return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }

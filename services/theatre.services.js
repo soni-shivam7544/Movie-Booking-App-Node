@@ -61,7 +61,7 @@ const getTheatre = async (id) => {
     try {
         const response = await Theatre.findById(id);
         if(!response) {
-            return {
+            throw {
                 err: "Theatre not found",
                 code: STATUS.NOT_FOUND
             }
@@ -176,7 +176,7 @@ const updateTheatre = async (id, theatreData) => {
     try {
         const theatre = await Theatre.findByIdAndUpdate(id, theatreData, { new: true, runValidators: true});
         if(!theatre) {
-            return {
+            throw {
                 err: "Theatre not found",
                 code: STATUS.NOT_FOUND
             }
@@ -188,7 +188,7 @@ const updateTheatre = async (id, theatreData) => {
             Object.keys(error.errors).forEach((key) => {
                 err[key] = error.errors[key].message;
             });
-            return {err: err, code: STATUS.UNPROCESSED_ENTITY};
+            throw {err: err, code: STATUS.UNPROCESSED_ENTITY};
         }
         throw error;
     }
