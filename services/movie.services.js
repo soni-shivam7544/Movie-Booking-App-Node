@@ -32,15 +32,19 @@ const createMovie = async (movieData) => {
  */
 
 const getMovieById = async (id) =>{
-    const movie = await Movie.findById(id);
-    console.log("Movie fetched", movie);
-    if(!movie){
-        return {
-            err: "No movie found for the corresponding id provided",
-            code: 404
+    try {
+        const movie = await Movie.findById(id);
+        if(!movie){
+            throw {
+                err: "No movie found for the corresponding id provided",
+                code: STATUS.NOT_FOUND
+            }
         }
+        return movie;
+    } catch(error){
+        console.log(error);
+        throw error;
     }
-    return movie;
 }
 
 /**
@@ -88,18 +92,22 @@ const updateMovieById = async (id, updateData) => {
  */
 
 const fetchMovies= async (filter) => {
-    let query = {};
-    if(filter.name){
-        query.name = filter.name;
-    }
-    const movies = await Movie.find(query);
-    if(movies.length === 0){
-        return {
-            err: "No movie found for the corresponding filter provided",
-            code: 404
+    try {
+        let query = {};
+        if(filter.name){
+            query.name = filter.name;
         }
+        const movies = await Movie.find(query);
+        if(movies.length === 0){
+            throw {
+                err: "No movie found for the corresponding filter provided",
+                code: STATUS.NOT_FOUND
+            }
+        }
+        return movies;
+    } catch(error) {
+        throw error;
     }
-    return movies;
 }
 
 module.exports = {

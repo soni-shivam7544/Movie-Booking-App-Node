@@ -42,17 +42,17 @@ const deleteMovie = async (req, res) => {
 const getMovie = async (req, res) => {
     try {
         const response = await movieServices.getMovieById(req.params.id);
-        if(response.err){
-            errorResponseBody.err = response.err;
-            return res.status(response.code).json(errorResponseBody);
-        }
         successResponseBody.data = response;
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
 
-    } catch(err){
-        console.log(err);
-        errorResponseBody.err = err;
-        return res.status(500).json(errorResponseBody);
+    } catch(error){
+        console.log(error);
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
 
     } finally {
         errorResponseBody.err = {};
@@ -80,17 +80,17 @@ const updateMovie = async (req, res) => {
 const getMovies = async (req, res) => {
     try {
         const response = await movieServices.fetchMovies(req.query);
-        if(response.err){
-            errorResponseBody.err = response.err;
-            return res.status(response.code).json(errorResponseBody);
-        }
         successResponseBody.data = response;
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
 
-    }catch(err) {
-        console.log(err);
-        errorResponseBody.err = err;
-        return res.status(500).json(errorResponseBody);
+    }catch(error) {
+        console.log(error);
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
