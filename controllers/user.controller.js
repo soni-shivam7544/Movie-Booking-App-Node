@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const env = require('dotenv');
 const userService = require('../services/user.services');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody.js');
+const { STATUS } = require('../utils/constants.js');
 
 env.config();
 const signup = async (req, res) => {
@@ -9,14 +10,14 @@ const signup = async (req, res) => {
         const user = await userService.createUser(req.body);
         successResponseBody.data = user;
         successResponseBody.message = "User registered successfully.";
-        return res.status(201).json(successResponseBody);
+        return res.status(STATUS.CREATED).json(successResponseBody);
     } catch (error) {
         if(error.err){
             errorResponseBody.err = error.err;
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -40,7 +41,7 @@ const signin = async(req, res) => {
             status: user.userStatus,
             token: token
         }
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
 
     } catch(error) {
         console.log(error);
@@ -49,7 +50,7 @@ const signin = async(req, res) => {
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -60,7 +61,7 @@ const resetPassword = async(req, res) => {
         if(!isOldPasswordCorrect) {
             throw {
                 err: "Invalid old password, please write the correct old password",
-                code: 403
+                code: STATUS.UNAUTHORISED
             }
         }
         user.password = req.body.newPassword;
@@ -68,7 +69,7 @@ const resetPassword = async(req, res) => {
 
         successResponseBody.data = user;
         successResponseBody.message = "Successfully updated the password for the given user";
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
 
     } catch (error) {
         if(error.err) {
@@ -76,7 +77,7 @@ const resetPassword = async(req, res) => {
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -85,7 +86,7 @@ const update = async( req, res) => {
         const response = await userService.updateUserRoleOrStatus(req.body, req.params.id);
         successResponseBody.data = response;
         successResponseBody.message = "User updated successfully";
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
         
     } catch (error) {
         console.log(error);
@@ -94,7 +95,7 @@ const update = async( req, res) => {
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
 
     }
 }

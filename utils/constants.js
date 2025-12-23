@@ -18,7 +18,17 @@ const USER_STATUS = {
     pending: "PENDING"
 };
 
+const STATUS = {
+    OK: 200,
+    INTERNAL_SERVER_ERROR: 500,
+    CREATED: 201,
+    UNAUTHORISED: 401,
+    NOT_FOUND: 404,
+    BAD_REQUEST: 400
+}
+
 module.exports = {
     USER_ROLE,
-    USER_STATUS
+    USER_STATUS,
+    STATUS
 }
