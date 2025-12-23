@@ -19,11 +19,13 @@ const userRoutes = (app) => {
     app.patch(
         '/mba/api/v1/auth/reset',
         authMiddlewares.isAuthenticated,
+        authMiddlewares.validateResetPasswordRequest,
         userController.resetPassword
     )
     // UPDATE USERROLE OR USERSERVICE
     app.patch(
         '/mba/api/v1/user/:id',
+        authMiddlewares.validateUpdateUserRequest,
         userController.update
     )
 }

@@ -10,7 +10,7 @@ const userService = require('../services/user.services');
  * @returns -> errorResponseBody for the corresponding client-side error
  */
 
-const validateSignupRequest = async (req, res, next)=> {
+const validateSignupRequest = (req, res, next)=> {
     // Validating if required fields are not missing.
 
     if(!req.body.name){
@@ -36,7 +36,7 @@ const validateSignupRequest = async (req, res, next)=> {
  * @param {*} next -> next middleware
  */
 
-const validateSigninRequest = async(req,res,next)=>{
+const validateSigninRequest = (req,res,next)=>{
     // validate user email presence
     if(!req.body.email){
         errorResponseBody.err = "No email provided for sign in";
@@ -82,8 +82,36 @@ const isAuthenticated = async (req, res, next) => {
     }
 }
 
+const validateResetPasswordRequest = (req, res, next) => {
+    // validate old password presence
+    if(!req.body.oldPassword){
+        errorResponseBody.err = "Missing the old password in the request";
+        return res.status(400).json(errorResponseBody);
+
+    }
+    // validate new password presence
+    if(!req.body.newPassword){
+        errorResponseBody.err = "Missing the new password in the request";
+        return res.status(400).json(errorResponseBody);
+    }
+
+    // we can proceed
+    next();
+}
+
+const validateUpdateUserRequest = (req, res, next) => {
+    // Validate presence of atleast one of the two i.e. userRole or userStatus
+    if(!(req.body.userRole || req.body.userStatus)) {
+        errorResponseBody.err = "Malformed request, please send atleast one parameter userRole or userStatus";
+        return res.status(400).json(errorResponseBody);
+    }
+    next();
+} 
+
 module.exports = {
     validateSignupRequest,
     validateSigninRequest,
-    isAuthenticated
+    isAuthenticated,
+    validateResetPasswordRequest,
+    validateUpdateUserRequest
 }
