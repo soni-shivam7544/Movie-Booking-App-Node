@@ -18,6 +18,7 @@ const theatreRoutes = (app) => {
     app.delete(
         '/mba/api/v1/theatres/:id',
         authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdminOrClient,
         theatreController.destroyTheatre
     );
 
