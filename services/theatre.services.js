@@ -126,7 +126,7 @@ const getAllTheatres = async (data) => {
 const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     let theatre = await Theatre.findById(theatreId);
     if(!theatre) {
-        return {
+        throw {
             err: "Theatre not found",
             code: STATUS.NOT_FOUND
         }
@@ -139,7 +139,7 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
     const invalidMovieIds = movieIds.filter(id => !existingMovieIds.includes(id.toString()));
 
     if (invalidMovieIds.length > 0) {
-        return {
+        throw {
             err: `Invalid movie IDs: ${invalidMovieIds.join(', ')}`,
             code: STATUS.BAD_REQUEST
         }
@@ -203,7 +203,7 @@ const updateTheatre = async (id, theatreData) => {
 const getMoviesInTheatre = async (theatreId) =>{
     const theatre = await Theatre.findById(theatreId, { name: 1, address: 1, movies: 1}).populate('movies');
     if(!theatre) {
-        return {
+        throw {
             err: "Theatre not found",
             code: STATUS.NOT_FOUND
         }
@@ -214,7 +214,7 @@ const getMoviesInTheatre = async (theatreId) =>{
 const checkMovieInTheatre = async( theatreId, movieId ) => {
     const theatre = await Theatre.findById(theatreId);
     if(!theatre){
-        return {
+        throw {
             err:"Theatre not found!",
             code: STATUS.NOT_FOUND
         }
