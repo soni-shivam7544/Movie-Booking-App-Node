@@ -24,7 +24,9 @@ const STATUS = {
     CREATED: 201,
     UNAUTHORISED: 401,
     NOT_FOUND: 404,
-    BAD_REQUEST: 400
+    BAD_REQUEST: 400,
+    UNPROCESSED_ENTITY: 422,
+    FORBIDDEN: 403
 }
 
 module.exports = {
