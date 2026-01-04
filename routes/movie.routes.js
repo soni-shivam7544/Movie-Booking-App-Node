@@ -1,7 +1,6 @@
-
 const movieController = require('../controllers/movie.controller');
 const { validateMovieCreateRequest } = require('../middlewares/movie.middlewares');
-
+const authMiddlewares = require('../middlewares/auth.middlewares');
 
 const movieRoutes = (app) => {
     // routes function takes express app as parameter
@@ -9,6 +8,8 @@ const movieRoutes = (app) => {
     // CREATE
     app.post(
         '/mba/api/v1/movies',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         validateMovieCreateRequest, // client request validation via middleware
         movieController.createMovie
     );
@@ -28,16 +29,22 @@ const movieRoutes = (app) => {
     // DELETE
     app.delete(
         '/mba/api/v1/movies/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         movieController.deleteMovie
     );
 
     // UPDATE
     app.patch(
         '/mba/api/v1/movies/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         movieController.updateMovie
     );
     app.put(
         '/mba/api/v1/movies/:id',
+        authMiddlewares.isAuthenticated,
+        authMiddlewares.isAdmin,
         validateMovieCreateRequest, // client request validation via middleware
         movieController.updateMovie
     );

@@ -1,4 +1,6 @@
 const Movie = require('../models/movie.model');
+const { STATUS } = require('../utils/constants');
+
 
 /**
  * 
@@ -9,7 +11,6 @@ const Movie = require('../models/movie.model');
 const createMovie = async (movieData) => {
     try {
         const movie = await Movie.create(movieData);
-        console.log("Movie created", movie);
         return movie;
     } catch(error) {
         let err = {}
@@ -17,7 +18,7 @@ const createMovie = async (movieData) => {
             Object.keys(error.errors).forEach((key) => {
                 err[key] = error.errors[key].message;
             });
-            return {err, code: 422};  // code 422 for logical validation error
+            throw {err, code: STATUS.UNPROCESSED_ENTITY};  // code 422 for logical validation error
         }
         throw err;
         
@@ -31,15 +32,19 @@ const createMovie = async (movieData) => {
  */
 
 const getMovieById = async (id) =>{
-    const movie = await Movie.findById(id);
-    console.log("Movie fetched", movie);
-    if(!movie){
-        return {
-            err: "No movie found for the corresponding id provided",
-            code: 404
+    try {
+        const movie = await Movie.findById(id);
+        if(!movie){
+            throw {
+                err: "No movie found for the corresponding id provided",
+                code: STATUS.NOT_FOUND
+            }
         }
+        return movie;
+    } catch(error){
+        console.log(error);
+        throw error;
     }
-    return movie;
 }
 
 /**
@@ -50,17 +55,21 @@ const getMovieById = async (id) =>{
  */
 
 const deleteMovieById = async (id) => {
-    const response = await Movie.deleteOne({
-        _id: id
-    })
-    if(response.deletedCount === 0){
-        return {
-            err: "No movie found for the corresponding id provided",
-            code: 404
-        }
+    try {
+        const response = await Movie.deleteOne({
+            _id: id
+        })
+        if(response.deletedCount === 0){
+            throw {
+                err: "No movie found for the corresponding id provided",
+                code: STATUS.NOT_FOUND
+            }
 
+        }
+        return response;
+    } catch (error) {
+        throw error;
     }
-    return response;
 }
 
 /**
@@ -71,9 +80,18 @@ const deleteMovieById = async (id) => {
  */
 
 const updateMovieById = async (id, updateData) => {
-    const movie = await Movie.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
-    console.log("Movie updated", movie);
-    return movie;
+    try {
+        const movie = await Movie.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+        return movie;
+    } catch(error) {
+        if(error.name === 'ValidationError') {
+            Object.keys(error.errors).forEach((key) => {
+                err[key] = error.errors[key].message;
+            });
+            throw {err, code: STATUS.UNPROCESSED_ENTITY};  // code 422 for logical validation error
+        }
+        throw error;
+    }
 }
 
 /**
@@ -83,18 +101,22 @@ const updateMovieById = async (id, updateData) => {
  */
 
 const fetchMovies= async (filter) => {
-    let query = {};
-    if(filter.name){
-        query.name = filter.name;
-    }
-    const movies = await Movie.find(query);
-    if(movies.length === 0){
-        return {
-            err: "No movie found for the corresponding filter provided",
-            code: 404
+    try {
+        let query = {};
+        if(filter.name){
+            query.name = filter.name;
         }
+        const movies = await Movie.find(query);
+        if(movies.length === 0){
+            throw {
+                err: "No movie found for the corresponding filter provided",
+                code: STATUS.NOT_FOUND
+            }
+        }
+        return movies;
+    } catch(error) {
+        throw error;
     }
-    return movies;
 }
 
 module.exports = {
