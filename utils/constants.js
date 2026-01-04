@@ -29,8 +29,15 @@ const STATUS = {
     FORBIDDEN: 403
 }
 
+const BOOKING_STATUS = {
+    cancelled: "CANCELLED",
+    processing: "IN_PROCESS",
+    successful: "SUCCESSFUL"
+}
+
 module.exports = {
     USER_ROLE,
     USER_STATUS,
-    STATUS
+    STATUS,
+    BOOKING_STATUS
 }
