@@ -1,7 +1,9 @@
-const { STATUS } = require('../utils/constants');
+const { STATUS , BOOKING_STATUS, USER_ROLE} = require('../utils/constants');
 const { errorResponseBody } = require('../utils/responseBody');
 const ObjectId = require('mongoose').Types.ObjectId;
+
 const theatreService = require('../services/theatre.services');
+const { getUserById } = require('../services/user.services');
 
 const validateBookingCreateRequest = async (req, res, next) => {
     // validate the theatre id presence
@@ -49,6 +51,16 @@ const validateBookingCreateRequest = async (req, res, next) => {
     next();
 }
 
+const canChangeStatus = async (req, res, next) => {
+    const user = await getUserById(req.user);
+    if(user.role == USER_ROLE.customer && req.body.status && req.body.status != BOOKING_STATUS.cancelled) {
+        errorResponseBody.err = "You can not change the booking status";
+        return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
+    }
+    next();
+}
+
 module.exports = {
-    validateBookingCreateRequest
+    validateBookingCreateRequest,
+    canChangeStatus
 }
