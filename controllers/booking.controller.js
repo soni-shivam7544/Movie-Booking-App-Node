@@ -1,6 +1,7 @@
 const { errorResponseBody, successResponseBody } = require('../utils/responseBody');
 const { STATUS } = require('../utils/constants');
 const bookingService = require('../services/booking.services');
+const { get } = require('mongoose');
 
 const create = async (req, res) => {
     try {
@@ -66,9 +67,27 @@ const getAllBookings = async (req, res) => {
     }
 }
 
+const getBookingById = async (req, res) => {
+    try {
+        const response = await bookingService.getBookingById(req.params.id, req.user);
+        successResponseBody.data = response;
+        successResponseBody.message = "Successfully fetched the booking";
+        return res.status(STATUS.OK).json(successResponseBody);
+    } catch (error) {
+        console.log(error);
+        if(error.err) {
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+    }
+}
+
 module.exports = {
     create,
     update,
     getBookings,
-    getAllBookings
+    getAllBookings,
+    getBookingById
 }

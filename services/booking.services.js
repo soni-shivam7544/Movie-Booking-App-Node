@@ -58,9 +58,32 @@ const getAllBookings = async() => {
     }
 }
 
+const getBookingById = async(id, userId) => {
+    try {
+        const response = await Booking.findById(id);
+        if(!response) {
+            throw {
+                err: "No booking records found for the id",
+                code: STATUS.NOT_FOUND
+            }
+        }
+        if(response.userId != userId) {
+            throw {
+                err: "You are not authorized to access this booking",
+                code: STATUS.UNAUTHORISED
+            }
+        }
+
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     createBooking,
     updateBooking,
     getBookings,
-    getAllBookings
+    getAllBookings,
+    getBookingById
 }
