@@ -1,8 +1,6 @@
-const { errorResponseBody, successResponseBody } = require('../utils/responseBody');
+const { errorResponseBody, successResponseBody } = require('../utils/responsebody');
 const { STATUS } = require('../utils/constants');
 const bookingService = require('../services/booking.services');
-const { get } = require('mongoose');
-
 const create = async (req, res) => {
     try {
         let userId = req.user;

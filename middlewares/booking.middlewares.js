@@ -1,5 +1,5 @@
 const { STATUS , BOOKING_STATUS, USER_ROLE} = require('../utils/constants');
-const { errorResponseBody } = require('../utils/responseBody');
+const { errorResponseBody } = require('../utils/responsebody');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 const theatreService = require('../services/theatre.services');

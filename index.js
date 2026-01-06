@@ -6,6 +6,7 @@ const movieRoutes = require("./routes/movie.routes");
 const theatreRoutes = require("./routes/theatre.routes");
 const userRoutes = require("./routes/user.routes");
 const bookingRoutes = require("./routes/booking.routes");
+const showRoutes = require("./routes/show.routes");
 
 // Load environment variables first
 env.config();
@@ -20,6 +21,7 @@ movieRoutes(app);
 theatreRoutes(app);
 userRoutes(app);
 bookingRoutes(app);
+showRoutes(app);
 
 const main = () => {
     mongoose.connect(process.env.DB_URL)
