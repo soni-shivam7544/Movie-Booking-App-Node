@@ -19,6 +19,24 @@ const create = async (req, res) => {
     }
 }
 
+const getShows = async (req, res) => {
+    try {
+        const response = await showService.getShows(req.query);
+        successResponseBody.data = response;
+        successResponseBody.message = "Successfully fetched all the shows of the movie.";
+        return res.status(STATUS.OK).json(successResponseBody);
+    } catch (error) {
+        console.log(error);
+        if(error.err) {
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error.err;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+    }
+}
+
 module.exports = {
-    create
+    create,
+    getShows
 }
