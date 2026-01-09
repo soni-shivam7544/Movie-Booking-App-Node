@@ -9,6 +9,12 @@ const routes = (app) => {
         paymentMiddlewares.verifyPaymentCreateRequest,
         paymentController.create
     );
+
+    app.get(
+        '/mba/api/v1/payments/:id',
+        authMiddlewares.isAuthenticated,
+        paymentController.getPaymentsDetailsById
+    );
 }
 
 module.exports = routes;

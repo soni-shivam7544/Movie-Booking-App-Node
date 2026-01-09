@@ -30,6 +30,24 @@ const create = async (req, res) => {
     }
 }
 
+const getPaymentsDetailsById = async (req, res) => {
+    try {
+        const response = await paymentService.getPaymentById(req.params.id);
+        successResponseBody.data = response;
+        successResponseBody.message = 'Payment details fetched successfully.';
+        return res.status(STATUS.OK).json(successResponseBody);
+        
+    } catch (error) {
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+    }
+}
+
 module.exports = {
-    create
+    create,
+    getPaymentsDetailsById
 }
