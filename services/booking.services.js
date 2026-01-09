@@ -1,9 +1,25 @@
 const Booking = require('../models/booking.model');
+const Show = require('../models/show.model');
 const { STATUS } = require('../utils/constants');
 
 const createBooking = async ( bookingData) => {
     try {
+        const show = await Show.findOne({
+            movieId: data.movieId,
+            theatreId: data.theatreId,
+            timing: data.timing
+        });
+
+        if(data.noOfSeats > show.noOfSeats || data.noOfSeats == 0) {
+            throw {
+                err: "Requested number of seats not available",
+                code: STATUS.CONFLICT
+            }
+        }
+        
+        data.totalCost = data.noOfSeats * show.price;
         const booking = await Booking.create(bookingData);
+        await show.save();
         return booking;
     } catch (error) {
         if(error.name == 'ValidationError') {

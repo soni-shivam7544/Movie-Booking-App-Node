@@ -2,10 +2,16 @@ const Payment = require('../models/payment.model');
 const Booking = require('../models/booking.model');
 const { STATUS, BOOKING_STATUS, PAYMENT_STATUS, USER_ROLE } = require('../utils/constants');
 const User = require('../models/user.model');
+const Show = require('../models/show.model');
 
 const createPayment = async(data) => {
     try {
         const booking = await Booking.findById(data.booking);
+        const show = await Show.findOne({
+            movieId: data.movieId,
+            theatreId: data.theatreId,
+            timing: data.timing
+        });
         if(!booking) {
             throw {
                 err: "No booking found",
@@ -48,6 +54,7 @@ const createPayment = async(data) => {
 
         payment.status = PAYMENT_STATUS.success;
         booking.status = BOOKING_STATUS.successful;
+        show.noOfSeats -= booking.noOfSeats;
         await booking.save();
         await payment.save();
         return booking;
