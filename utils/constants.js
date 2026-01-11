@@ -26,11 +26,29 @@ const STATUS = {
     NOT_FOUND: 404,
     BAD_REQUEST: 400,
     UNPROCESSED_ENTITY: 422, // unprocessable_entity
-    FORBIDDEN: 403
+    FORBIDDEN: 403,
+    GONE: 410,
+    PAYMENT_REQUIRED: 402,
+    CONFLICT: 409
+}
+
+const BOOKING_STATUS = {
+    cancelled: "CANCELLED",
+    processing: "IN_PROCESS",
+    successful: "SUCCESSFUL",
+    expired: "EXPIRED"
+}
+
+const PAYMENT_STATUS = {
+    pending: "PENDING",
+    success: "SUCCESS",
+    failed: "FAILED"
 }
 
 module.exports = {
     USER_ROLE,
     USER_STATUS,
-    STATUS
+    STATUS,
+    BOOKING_STATUS,
+    PAYMENT_STATUS
 }

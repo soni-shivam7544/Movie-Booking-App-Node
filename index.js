@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 const movieRoutes = require("./routes/movie.routes");
 const theatreRoutes = require("./routes/theatre.routes");
 const userRoutes = require("./routes/user.routes");
+const bookingRoutes = require("./routes/booking.routes");
+const showRoutes = require("./routes/show.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 // Load environment variables first
 env.config();
@@ -18,6 +21,9 @@ mongoose.set('debug', true); // Enable mongoose debug mode for detailed query lo
 movieRoutes(app);
 theatreRoutes(app);
 userRoutes(app);
+bookingRoutes(app);
+showRoutes(app);
+paymentRoutes(app);
 
 const main = () => {
     mongoose.connect(process.env.DB_URL)
