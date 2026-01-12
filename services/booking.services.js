@@ -2,14 +2,13 @@ const Booking = require('../models/booking.model');
 const Show = require('../models/show.model');
 const { STATUS } = require('../utils/constants');
 
-const createBooking = async ( bookingData) => {
+const createBooking = async ( data ) => {
     try {
         const show = await Show.findOne({
             movieId: data.movieId,
             theatreId: data.theatreId,
             timing: data.timing
         });
-
         if(data.noOfSeats > show.noOfSeats || data.noOfSeats == 0) {
             throw {
                 err: "Requested number of seats not available",
@@ -18,7 +17,7 @@ const createBooking = async ( bookingData) => {
         }
         
         data.totalCost = data.noOfSeats * show.price;
-        const booking = await Booking.create(bookingData);
+        const booking = await Booking.create(data);
         await show.save();
         return booking;
     } catch (error) {

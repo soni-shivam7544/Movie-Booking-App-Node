@@ -17,7 +17,7 @@ const createShow = async (data) => {
                 code: STATUS.NOT_FOUND
             }
         }
-        if(!theatre.movies.indexOf(data.movieId) > -1) {
+        if(!(theatre.movies.indexOf(data.movieId) > -1)) {
             throw {
                 err: "Given movie is not available in the requested theatre",
                 code: STATUS.UNPROCESSED_ENTITY

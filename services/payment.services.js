@@ -6,12 +6,14 @@ const Show = require('../models/show.model');
 
 const createPayment = async(data) => {
     try {
+
         const booking = await Booking.findById(data.booking);
         const show = await Show.findOne({
             movieId: data.movieId,
             theatreId: data.theatreId,
             timing: data.timing
         });
+
         if(!booking) {
             throw {
                 err: "No booking found",
@@ -29,7 +31,7 @@ const createPayment = async(data) => {
         
         // calculate how many minutes are remaining
         let minutes = Math.floor(((currentTime - bookingTime) / 1000) / 60);
-        if(minutes > 5) {
+        if(minutes > 50) {
             booking.status = BOOKING_STATUS.expired;
             await booking.save();
             return booking;
@@ -55,8 +57,10 @@ const createPayment = async(data) => {
         payment.status = PAYMENT_STATUS.success;
         booking.status = BOOKING_STATUS.successful;
         show.noOfSeats -= booking.noOfSeats;
+        console.log(show);
         await booking.save();
         await payment.save();
+        await show.save();
         return booking;
 
 
